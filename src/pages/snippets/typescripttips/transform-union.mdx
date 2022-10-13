@@ -1,0 +1,62 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+
+export const meta = {
+  date: '2022-02-28',
+  title: '#2 Transform Union into Another',
+  topic: 'typescript',
+  group: 'tips',
+  tags: ['tricks'],
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+Transform a union to another union, using the 'in' operator as a kind of for-loop.
+
+This pattern can be used for almost any kind of transformation - here, I add a dynamic key.
+
+<a
+  href="https://twitter.com/mattpocockuk/status/1498284926621396992"
+  target="_blank"
+>
+  Original Link
+</a>
+
+```ts
+type Entity =
+  | {
+      type: 'user'
+    }
+  | {
+      type: 'post'
+    }
+  | {
+      type: 'comment'
+    }
+
+type EntityWithId =
+  | {
+      type: 'user'
+      userId: number
+    }
+  | {
+      type: 'post'
+      postId: number
+    }
+  | {
+      type: 'comment'
+      commentId: number
+    }
+
+type NewEntityWithId = {
+  [EntityType in Entity['type']]: {
+    type: EntityType
+  } & Record<`${EntityType}Id`, number>
+}[Entity['type']]
+
+const result: NewEntityWithId = {
+  type: 'user',
+  userId: 123,
+}
+```

@@ -1,0 +1,57 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+
+export const meta = {
+  date: '2022-03-04',
+  title: '#4 Use function overloads and generics to type a compose function',
+  topic: 'typescript',
+  group: 'tips',
+  tags: ['tricks'],
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+Function overloads can be used in conjunction with generics to make incredibly complex and dynamic type signatures.
+
+Here, we make a compose function - incredibly useful for functional programming.
+
+<a
+  href="https://twitter.com/mattpocockuk/status/1499730377337827336"
+  target="_blank"
+>
+  Original Link
+</a>
+
+```ts
+export function compose<Input, FirstArg>(
+  func: (input: Input) => FirstArg
+): (input: Input) => FirstArg
+export function compose<Input, FirstArg, SecondArg>(
+  func: (input: Input) => FirstArg,
+  func1: (input: FirstArg) => SecondArg
+): (input: Input) => SecondArg
+export function compose<Input, FirstArg, SecondArg, ThirdArg>(
+  func: (input: Input) => FirstArg,
+  func2: (input: FirstArg) => SecondArg,
+  func3: (input: SecondArg) => ThirdArg
+): (input: Input) => ThirdArg
+
+export function compose(...args: any[]) {
+  return {} as any
+}
+
+const addOne = (a: number) => {
+  return a + 1
+}
+
+const numToString = (a: number) => {
+  return a.toString()
+}
+
+const stringToNum = (a: string) => {
+  return parseInt(a)
+}
+
+const addOneToString = compose(addOne, numToString, stringToNum)
+```

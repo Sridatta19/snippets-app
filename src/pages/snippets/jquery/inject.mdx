@@ -1,0 +1,24 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+
+export const meta = {
+  date: '2020-01-22',
+  title: 'Inject jQuery into web pages to enable scraping',
+  topic: 'javascript',
+  group: 'scraping',
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+```js
+function injectJQuery() {
+  var head = document.getElementsByTagName('head')[0]
+  var script = document.createElement('script')
+  script.src = '//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js'
+  script.onload = function () {
+    $('p').css('border', '3px solid red')
+  }
+  head.appendChild(script)
+}
+```

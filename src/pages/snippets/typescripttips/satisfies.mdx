@@ -1,0 +1,58 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+
+export const meta = {
+  date: '2022-06-14',
+  title: '#24 Typescript Satisfies Operator',
+  topic: 'typescript',
+  group: 'tips',
+  tags: ['tricks'],
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+Deriving vs Declaring is key to getting the most inference out of your types with as few lines of code as possible.
+
+But sometimes, you want to _ensure_ that some code conforms to a type without losing its literal values.
+
+Enter satisfies()()
+
+<a
+  href="https://twitter.com/mattpocockuk/status/1536670032360611840"
+  target="_blank"
+>
+  Original Link
+</a>
+
+```ts
+const num = satisfies<number>()(2)
+
+// type Action = 'view' | 'create' | 'update' | 'delete'
+// type Role = 'anonymous' | 'admin' | 'loggedIn'
+
+export const userActions: {
+  type: Action
+  roles: Role[]
+}[] = [
+  {
+    type: 'view',
+    roles: ['anonymous', 'admin'],
+  },
+  {
+    type: 'create',
+    roles: ['admin'],
+  },
+  {
+    type: 'update',
+    roles: ['admin', 'loggedIn'],
+  },
+  {
+    type: 'delete',
+    roles: ['admin'],
+  },
+]
+
+type Action = typeof userActions[number]['type']
+type Role = typeof userActions[number]['roles'][number]
+```

@@ -1,0 +1,50 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+
+export const meta = {
+  date: '2022-03-02',
+  title: '#3 Decode URL search params at the type level',
+  topic: 'typescript',
+  group: 'tips',
+  tags: ['tricks'],
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+TypeScript's string interpolation powers are incredible, especially since 4.1. Add some utilities from ts-toolbelt, and you've got a stew going.
+
+Here, we decode some URL search params AT THE TYPE LEVEL.
+
+<a
+  href="https://twitter.com/mattpocockuk/status/1499002040168636420"
+  target="_blank"
+>
+  Original Link
+</a>
+
+```ts
+import { String, Union } from 'ts-toolbelt'
+
+const query = `/home?a=foo&b=wow`
+
+type Query = typeof query
+
+type SecondaryQueryPart = String.Split<Query, '?'>[1]
+
+type QueryElements = String.Split<SecondaryQueryPart, '&'>
+
+type QueryParams = {
+  [QueryElement in QueryElements[number]]: {
+    [Key in String.Split<QueryElement, '='>[0]]: String.Split<
+      QueryElement,
+      '='
+    >[1]
+  }
+}[QueryElements[number]]
+
+const obj: Union.Merge<QueryParams> = {
+  a: 'foo',
+  b: 'wow',
+}
+```

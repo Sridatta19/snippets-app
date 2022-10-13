@@ -1,0 +1,76 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+
+export const meta = {
+  date: '2022-05-21',
+  title: 'Dive - Advent of Code 2021 Day 02',
+  topic: 'javascript',
+  group: 'adventofcode2021',
+  tags: ['ramda'],
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+It seems like the submarine can take a series of commands like forward 1, down 2, or up 3:
+
+- forward X increases the horizontal position by X units.
+- down X increases the depth by X units.
+- up X decreases the depth by X units.
+
+### Solution
+
+> Q) What do you get if you multiply your final horizontal position by your final depth?
+
+```js
+const reducer = ([horizontal, depth], [keyword, value]) => {
+  return R.cond([
+    [R.equals('forward'), R.always([R.add(horizontal, value), depth])],
+    [R.equals('down'), R.always([horizontal, R.add(depth, value)])],
+    [R.equals('up'), R.always([horizontal, R.subtract(depth, value)])],
+    [R.T, R.always([horizontal, depth])],
+  ])(keyword)
+}
+
+const solution = R.pipe(
+  R.map(R.split(' ')),
+  R.reduce(reducer, [0, 0]),
+  R.apply(R.multiply)
+)
+```
+
+## Part Two: Consider parameter 'aim'
+
+- down X increases your aim by X units.
+- up X decreases your aim by X units.
+- forward X does two things:
+  - It increases your horizontal position by X units.
+  - It increases your depth by your aim multiplied by X.
+
+> Q) What do you get if you multiply your final horizontal position by your final depth?
+
+```js
+const reducer = ([horizontal, depth, aim], [keyword, value]) => {
+  const rtn = R.cond([
+    [
+      R.equals('forward'),
+      R.always([
+        R.add(horizontal, value),
+        R.add(depth, R.multiply(aim, value)),
+        aim,
+      ]),
+    ],
+    [R.equals('down'), R.always([horizontal, depth, R.add(aim, value)])],
+    [R.equals('up'), R.always([horizontal, depth, R.subtract(aim, value)])],
+    [R.T, R.always([horizontal, depth, aim])],
+  ])(keyword)
+  return rtn
+}
+
+const solution = R.pipe(
+  R.map(R.split(' ')),
+  R.reduce(reducer, [0, 0, 0]),
+  R.init,
+  R.apply(R.multiply)
+)
+```

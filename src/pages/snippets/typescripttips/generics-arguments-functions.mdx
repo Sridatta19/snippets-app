@@ -1,0 +1,49 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+
+export const meta = {
+  date: '2022-04-01',
+  title:
+    '#15 Use generics to dynamically specify the number, and type, of arguments to functions',
+  topic: 'typescript',
+  group: 'tips',
+  tags: ['tricks'],
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+You can use generics to dynamically specify the number, and type, of arguments to functions.
+
+Here, we create a sendEvent function which only asks for a payload if it's present on the event you're sending.
+
+<a
+  href="https://twitter.com/mattpocockuk/status/1509850662795989005"
+  target="_blank"
+>
+  Original Link
+</a>
+
+```ts
+export type Event =
+  | {
+      type: 'LOG_IN'
+      payload: {
+        userId: string
+      }
+    }
+  | {
+      type: 'SIGN_OUT'
+    }
+
+const sendEvent = <Type extends Event['type']>(
+  ...args: Extract<Event, { type: Type }> extends { payload: infer TPayload }
+    ? [Type, TPayload]
+    : [Type]
+) => {}
+
+sendEvent('SIGN_OUT')
+sendEvent('LOG_IN', {
+  userId: '123',
+})
+```

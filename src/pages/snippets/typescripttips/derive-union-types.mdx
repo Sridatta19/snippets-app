@@ -1,0 +1,55 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+
+export const meta = {
+  date: '2022-02-25',
+  title: '#1 Derive a union type from an object',
+  topic: 'typescript',
+  group: 'tips',
+  tags: ['tricks'],
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+Learn how to derive a union type from an object - an incredibly useful switcheroo that's at the heart of most TS magic out there.
+
+<a
+  href="https://twitter.com/mattpocockuk/status/1497262298368409605"
+  target="_blank"
+>
+  Original Link
+</a>
+
+```ts
+export const fruitCounts = {
+  apple: 1,
+  banana: 6,
+  pear: 24,
+}
+
+// Previously
+type SingleFruitCount =
+  | {
+      apple: number
+    }
+  | {
+      banana: number
+    }
+  | {
+      pear: number
+    }
+
+type FruitCounts = typeof fruitCounts
+
+// Newly
+type NewSingleFruitCount = {
+  [K in keyof FruitCounts]: {
+    [K2 in K]: number
+  }
+}[keyof FruitCounts]
+
+const singleFruitCount: NewSingleFruitCount = {
+  banana: 12,
+}
+```

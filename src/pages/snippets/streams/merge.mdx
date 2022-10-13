@@ -1,0 +1,41 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+
+export const meta = {
+  date: '2022-03-05',
+  title: 'Merging JSON files into NDJSON format',
+  topic: 'nodejs',
+  group: 'streams',
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+```js
+import MultiStream from 'multistream'
+import split from "split";
+import JSONStream from "JSONStream";
+import { createWriteStream, createReadStream } from "fs";
+
+async mergeFiles = () => {
+  const destStream = createWriteStream("data/mergedjson.ndjson");
+
+  const sourceStreams = [
+    createReadStream(__dirname + "/results/json_01.json"),
+    createReadStream(__dirname + "/results/json_02.json"),
+    createReadStream(__dirname + "/results/json_03.json"),
+    createReadStream(__dirname + "/results/json_04.json"),
+    createReadStream(__dirname + "/results/json_05.json"),
+  ];
+
+  try {
+    new MultiStream(sourceStreams)
+      .pipe(JSONStream.parse(['rows', true, 'doc']))
+      .pipe(JSONStream.stringify(false))
+      .pipe(split((line) => line + "\n"))
+      .pipe(destStream);
+  } catch (ex) {
+    console.error(ex);
+  }
+}
+```

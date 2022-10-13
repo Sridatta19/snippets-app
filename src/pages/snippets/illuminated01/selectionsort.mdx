@@ -1,0 +1,48 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+import Callout from '@/components/Callout'
+
+export const meta = {
+  date: '2022-07-08',
+  title: 'Selection sort - Algorithms Illuminated Vol 1',
+  topic: 'rust',
+  group: 'illuminated01',
+  tags: ['sorting'],
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+### Problem
+
+Input: array A of n distinct integers.<br/>
+Output: array with the same integers, sorted from
+smallest to largest.
+
+<Callout title="Pseudo Code">
+  Scan through the input array to identify the minimum element and copy it over
+  to the first element of the output array; then do another scan to identify and
+  copy over the second-smallest element; and so on
+</Callout>
+
+### Solution
+
+```rust
+pub fn selection_sort<T: PartialOrd + Copy>(list: &mut [T]) -> &mut [T] {
+    let mut min: usize;
+    for i in 0..list.len() {
+        min = i;
+        for j in i..list.len() {
+            if list[j] < list[min] {
+                min = j;
+            }
+        }
+
+        if min != i {
+            list.swap(i, min);
+        }
+    }
+
+    list
+}
+```

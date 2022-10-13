@@ -1,0 +1,39 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+
+export const meta = {
+  date: '2022-03-11',
+  title:
+    "#7 Create your own 'objectKeys' function using generics and the 'keyof' operator",
+  topic: 'typescript',
+  group: 'tips',
+  tags: ['tricks'],
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+The looseness of Object.keys can be a real pain point when using TypeScript. Luckily, it's pretty simple to create a tighter version using generics and the keyof operator.
+
+<a
+  href="https://twitter.com/mattpocockuk/status/1502264005251018754"
+  target="_blank"
+>
+  Original Link
+</a>
+
+```ts
+export const myObject = {
+  a: 1,
+  b: 2,
+  c: 3,
+}
+
+const objectKeys = <Obj>(obj: Obj): (keyof Obj)[] => {
+  return Object.keys(obj) as (keyof Obj)[]
+}
+
+objectKeys(myObject).forEach((key) => {
+  console.log(myObject[key])
+})
+```

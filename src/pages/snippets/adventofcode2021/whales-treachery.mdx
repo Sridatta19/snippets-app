@@ -1,0 +1,85 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+
+export const meta = {
+  date: '2022-05-24',
+  title: 'The Treachery of Whales - Advent of Code 2021 Day 07',
+  topic: 'javascript',
+  group: 'adventofcode2021',
+  tags: ['ramda'],
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+Consider the following horizontal positions:
+
+16,1,2,0,4,2,7,1,2,14
+This means there's a crab with horizontal position 16, a crab with horizontal position 1, and so on.
+
+Each change of 1 step in horizontal position of a single crab costs 1 fuel. You could choose any horizontal position to align them all on, but the one that costs the least fuel is horizontal position 2:
+
+```
+Move from 16 to 2: 14 fuel
+Move from 1 to 2: 1 fuel
+Move from 2 to 2: 0 fuel
+Move from 0 to 2: 2 fuel
+Move from 4 to 2: 2 fuel
+Move from 2 to 2: 0 fuel
+Move from 7 to 2: 5 fuel
+Move from 1 to 2: 1 fuel
+Move from 2 to 2: 0 fuel
+Move from 14 to 2: 12 fuel
+```
+
+> Q) How much fuel must they spend to align to that position?
+
+```js
+const diff = R.curry((a, b) => Math.abs(R.subtract(a, b)))
+
+const final = data.split(',').map(Number)
+
+const arr = sequenceGen(Math.min(...final) - 1, Math.max(...final) + 1)
+
+const solution = R.pipe(
+  R.map((a) => final.map((b) => diff(a, b))),
+  R.map(R.sum),
+  R.reduce(R.minBy(R.identity), Infinity)
+)(arr)
+```
+
+## Part Two: dynamic fuel burn rate
+
+As each crab moves, moving further becomes more expensive. This changes the best horizontal position to align them all on; in the example above, this becomes 5:
+
+```
+Move from 16 to 5: 66 fuel
+Move from 1 to 5: 10 fuel
+Move from 2 to 5: 6 fuel
+Move from 0 to 5: 15 fuel
+Move from 4 to 5: 1 fuel
+Move from 2 to 5: 6 fuel
+Move from 7 to 5: 3 fuel
+Move from 1 to 5: 10 fuel
+Move from 2 to 5: 6 fuel
+Move from 14 to 5: 45 fuel
+```
+
+> Q) How much fuel must they spend to align to that position?
+
+```js
+const diff = R.curry((a, b) => Math.abs(R.subtract(a, b)))
+
+const final = data.split(',').map(Number)
+
+const arr = sequenceGen(Math.min(...final) - 1, Math.max(...final) + 1)
+
+const power = (n) => R.divide(R.multiply(n, n + 1), 2)
+
+const solution = R.pipe(
+  R.map((a) => final.map((b) => diff(a, b))),
+  R.map(R.map(power)),
+  R.map(R.sum),
+  R.reduce(R.minBy(R.identity), Infinity)
+)(arr)
+```

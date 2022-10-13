@@ -1,0 +1,40 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+
+export const meta = {
+  date: '2022-03-18',
+  title: '#10 Throw detailed error messages for type checks',
+  topic: 'typescript',
+  group: 'tips',
+  tags: ['tricks'],
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+Using a crazy trick I picked up from, you can throw detailed error messages for type checks.
+
+Here, I move a runtime check in a function to the type level, meaning you get a detailed error if you use it wrong.
+
+<a
+  href="https://twitter.com/mattpocockuk/status/1504802045794078723"
+  target="_blank"
+>
+  Original Link
+</a>
+
+```ts
+type CheckForBadArgs<Arg> = Arg extends any[]
+  ? 'You cannot compare two arrays'
+  : Arg
+
+export const deepEqualCompare = <Arg>(
+  a: CheckForBadArgs<Arg>,
+  b: CheckForBadArgs<Arg>
+): boolean => {
+  return a === b
+}
+
+deepEqualCompare(1, 2)
+deepEqualCompare([1], [2])
+```

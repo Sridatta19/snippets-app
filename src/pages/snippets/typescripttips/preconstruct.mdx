@@ -1,0 +1,28 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+
+export const meta = {
+  date: '2022-05-13',
+  title: '#21 Publishing TypeScript package up to NPM',
+  topic: 'typescript',
+  group: 'tips',
+  tags: ['tricks'],
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+If you're thinking about putting a TypeScript package up to NPM, you should be considering preconstruct. It makes setup EXTREMELY easy and takes many decisions out of your hands.
+
+Here, we get a package ready for release in under 2 minutes.
+
+<a
+  href="https://twitter.com/mattpocockuk/status/1516752789564764160"
+  target="_blank"
+>
+  Original Link
+</a>
+
+```bash
+yarn preconstruct fix
+```

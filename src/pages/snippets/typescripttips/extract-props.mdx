@@ -1,0 +1,47 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+
+export const meta = {
+  date: '2022-03-09',
+  title:
+    "#6 Write your own 'PropsFrom' helper to extract props from any React component",
+  topic: 'typescript',
+  group: 'tips',
+  tags: ['tricks'],
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+Type helpers change the game when it comes to types in your codebase. They help TypeScript infer more from your code - and make your types a lot more readable.
+
+Here, I write my own PropsFrom helper to extract props from any React component.
+
+<a
+  href="https://twitter.com/mattpocockuk/status/1501533441791193090"
+  target="_blank"
+>
+  Original Link
+</a>
+
+```ts
+import React from 'react'
+
+const MyComponent = (props: { enabled: boolean }) => {
+  return null
+}
+
+class MyOtherComponent extends React.Component<{
+  enabled: boolean
+}> {}
+
+type PropsFrom<TComponent> = TComponent extends React.FC<infer Props>
+  ? Props
+  : TComponent extends React.Component<infer Props>
+  ? Props
+  : never
+
+const props: PropsFrom<typeof MyComponent> = {
+  enabled: true,
+}
+```

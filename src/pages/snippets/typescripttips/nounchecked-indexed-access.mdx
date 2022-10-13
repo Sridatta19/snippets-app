@@ -1,0 +1,35 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+
+export const meta = {
+  date: '2022-04-04',
+  title:
+    "#16 Make accessing objects safer by enabling 'noUncheckedIndexedAccess' in tsconfig",
+  topic: 'typescript',
+  group: 'tips',
+  tags: ['tricks'],
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+The "noUncheckedIndexedAccess" is the most awesome config option you've never heard of. It makes accessing objects a lot safer, and also powers up TypeScript's inference on objects.
+
+<a
+  href="https://twitter.com/mattpocockuk/status/1510938191091712007"
+  target="_blank"
+>
+  Original Link
+</a>
+
+```ts
+export const myObj: Record<string, string[]> = {}
+
+myObj['foo']?.push('bar')
+
+if (!myObj.foo) {
+  myObj.foo = []
+}
+
+myObj.foo.push('bar')
+```

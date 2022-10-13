@@ -1,0 +1,48 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+
+export const meta = {
+  date: '2022-03-14',
+  title: '#8 Use generics in React to make dynamic and flexible components',
+  topic: 'typescript',
+  group: 'tips',
+  tags: ['tricks'],
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+You can use generics in React to make incredibly dynamic, flexible components. Here, I make a Table component with a generic 'items' type.
+
+<a
+  href="https://twitter.com/mattpocockuk/status/1503352924537339904"
+  target="_blank"
+>
+  Original Link
+</a>
+
+```ts
+import React from 'react'
+
+interface TableProps<TItem> {
+  items: TItem[]
+  renderItem: (item: TItem) => React.ReactNode
+}
+
+export function Table<TItem>(props: TableProps<TItem>) {
+  return null
+}
+
+const Component = () => {
+  return (
+    <Table<{ id: number }>
+      items={[
+        {
+          id: '1',
+        },
+      ]}
+      renderItem={(item) => <div>{item.id}</div>}
+    ></Table>
+  )
+}
+```

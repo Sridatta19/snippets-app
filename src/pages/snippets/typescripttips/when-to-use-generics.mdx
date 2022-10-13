@@ -1,0 +1,55 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+
+export const meta = {
+  date: '2022-04-11',
+  title: '#19 Know when to use generics',
+  topic: 'typescript',
+  group: 'tips',
+  tags: ['tricks'],
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+It can be hard to know when to reach for generics. Ask yourself:
+
+Are there ZERO dynamic elements in your function? No generics needed.
+
+If you have dynamic elements, do you know all their shapes up front? You might just need a union type.
+
+<a
+  href="https://twitter.com/mattpocockuk/status/1513492326555037698"
+  target="_blank"
+>
+  Original Link
+</a>
+
+```ts
+interface Animal {
+  name: string
+}
+
+interface Human {
+  firstName: string
+  lastName: string
+}
+
+export const getDisplayName = <TItem extends Human | Animal>(
+  item: TItem
+): TItem extends Human ? { humanName: string } : { animalName: string } => {
+  if ('name' in item) {
+    return {
+      animalName: item.name,
+    }
+  }
+}
+
+const result = getDisplayName({
+  name: 'Patch',
+})
+const result2 = getDisplayName({
+  firstName: 'Matt',
+  lastName: 'Pocock',
+})
+```

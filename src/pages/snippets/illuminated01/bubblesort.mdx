@@ -1,0 +1,41 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+import Callout from '@/components/Callout'
+
+export const meta = {
+  date: '2022-07-08',
+  title: 'Bubblesort - Algorithms Illuminated Vol 1',
+  topic: 'rust',
+  group: 'illuminated01',
+  tags: ['sorting'],
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+### Problem
+
+Input: array A of n distinct integers.<br/>
+Output: array with the same integers, sorted from
+smallest to largest.
+
+<Callout title="Pseudo Code">
+  Identify adjacent pairs of elements that are out of order order, and perform
+  repeated swaps until the entire array is sorted
+</Callout>
+
+### Solution
+
+```rust
+pub fn bubble_sort<T: PartialOrd + Copy>(list: &mut [T]) -> &mut [T] {
+    for i in 0..list.len() {
+        for j in 0..list.len() {
+            if list[i] < list[j] {
+                list.swap(i, j);
+            }
+        }
+    }
+
+    list
+}
+```

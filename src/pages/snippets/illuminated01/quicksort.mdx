@@ -1,0 +1,69 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+import Callout from '@/components/Callout'
+
+export const meta = {
+  date: '2022-07-08',
+  title: 'Quicksort - Algorithms Illuminated Vol 1',
+  topic: 'rust',
+  group: 'illuminated01',
+  tags: ['divideconquer', 'sorting'],
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+### Problem
+
+Input: array A of n distinct integers.<br/>
+Output: array with the same integers, sorted from
+smallest to largest.
+
+<Callout title="Pseudo Code">
+  Step 1: Choose a pivot element. First, choose one element of the array to act
+  as a pivot element.
+  <br /> Step 2: Rearrange the input array around the pivot. Given the pivot element
+  p, arrange the elements of the array so that everything before p in the array is
+  less than p, and everything after p is greater than p.
+</Callout>
+
+### Solution
+
+```rust
+pub fn quick_sort<T>(list: &mut [T], start: usize, end: usize) -> ()
+where
+    T: PartialOrd + Copy + std::fmt::Debug,
+{
+    if end - start < 2 {
+        return;
+    }
+    let num = rand::thread_rng().gen_range(start..end + 1);
+    let pivot = partition(list, num, start, end);
+    quick_sort(list, start, pivot);
+    quick_sort(list, pivot, end);
+}
+
+fn partition<T>(list: &mut [T], pivot: usize, start: usize, end: usize) -> usize
+where
+    T: PartialOrd + Copy + std::fmt::Debug,
+{
+    list.swap(pivot, start);
+
+    let (mut i, mut j) = (start + 1, start + 1);
+
+    loop {
+        if list[j] < list[start] {
+            list.swap(i, j);
+            i += 1;
+        }
+        j += 1;
+        if j == end + 1 {
+            break;
+        }
+    }
+
+    list.swap(start, i - 1);
+
+    i - 1
+}
+```

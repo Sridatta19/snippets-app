@@ -1,0 +1,42 @@
+.gui-carousel {
+  --_carousel-item-size: 72%;
+  --_carousel-gutters: max(4rem, calc((100% - var(--_carousel-item-size)) / 2));
+  --_carousel-scrollbar-gutter: 1.75rem;
+  --_carousel-pagination-size: 2rem;
+  grid-template-columns: var(--_carousel-gutters) 1fr var(--_carousel-gutters);
+  grid-template-rows: 1fr var(--_carousel-pagination-size);
+}
+
+#controls {
+  padding-inline: var(--_carousel-gutters);
+}
+
+.gui-carousel--control {
+  -webkit-margin-after: var(--_carousel-scrollbar-gutter);
+  margin-block-end: var(--_carousel-scrollbar-gutter);
+}
+
+.gui-carousel--control:not([disabled='true']):active {
+  transform: scale(0.95);
+}
+
+.gui-carousel--scroller {
+  gap: var(--_carousel-gutters);
+  /* gap: 4px; */
+  padding-block: 0.5rem var(--_carousel-scrollbar-gutter);
+  scroll-padding-inline: var(--_carousel-gutters);
+  /* padding-inline: var(--_carousel-gutters); */
+}
+
+.gui-carousel--pagination {
+  scrollbar-width: none;
+}
+.gui-carousel--pagination::-webkit-scrollbar {
+  display: none;
+}
+.gui-carousel--scroller {
+  scrollbar-width: none;
+}
+.gui-carousel--scroller::-webkit-scrollbar {
+  display: none;
+}

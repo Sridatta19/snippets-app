@@ -1,0 +1,47 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+
+export const meta = {
+  date: '2022-03-23',
+  title: '#12 Create autocomplete helper which allows for arbitrary values',
+  topic: 'typescript',
+  group: 'tips',
+  tags: ['tricks'],
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+Ever wanted just a _bit_ of autocomplete?
+
+Here, we create a TypeScript helped called LooseAutocomplete which gives us autocomplete while also allowing arbitrary values.
+
+<a
+  href="https://twitter.com/mattpocockuk/status/1506607945445949446"
+  target="_blank"
+>
+  Original Link
+</a>
+
+```ts
+type IconSize = 'xs' | 'md' | Omit<string, 'xs' | 'md'>
+type IconSizeNew = 'xs' | 'md' | (`xs${string}` & {})
+
+interface IconProps {
+  size: IconSizeNew
+}
+
+export const Icon = (props: IconProps) => {
+  return <></>
+}
+
+const Comp1 = () => {
+  return (
+    <>
+      <Icon size="xs"></Icon>
+      <Icon size="xssomething"></Icon>
+      <Icon size="md"></Icon>
+    </>
+  )
+}
+```

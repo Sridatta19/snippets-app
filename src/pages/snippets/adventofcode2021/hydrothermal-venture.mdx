@@ -1,0 +1,140 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+
+export const meta = {
+  date: '2022-05-23',
+  title: 'Hydrothermal Venture - Advent of Code 2021 Day 05',
+  topic: 'javascript',
+  group: 'adventofcode2021',
+  tags: ['ramda'],
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+You come across a field of hydrothermal vents on the ocean floor!
+
+```
+0,9 -> 5,9
+8,0 -> 0,8
+9,4 -> 3,4
+2,2 -> 2,1
+7,0 -> 7,4
+6,4 -> 2,0
+0,9 -> 2,9
+3,4 -> 1,4
+0,0 -> 8,8
+5,5 -> 8,2
+```
+
+> Q) At how many points do at least two lines overlap?
+
+```js
+const filterLinearLines = ([[a1, a2], [b1, b2]]) =>
+  R.or(R.equals(a1, b1), R.equals(a2, b2))
+
+const transformCoordinates = ([[a1, a2], [b1, b2]]) => {
+  if (R.equals(a1, b1)) {
+    const isOdd = (acc, x2) => x2 !== R.min(a2, b2)
+    const reducer = (acc, x1) => R.append([b1, x1], acc)
+    return R.reduceWhile(
+      isOdd,
+      reducer,
+      [
+        [a1, a2],
+        [b1, b2],
+      ],
+      sequenceGen(a2, b2)
+    )
+  } else if (R.equals(a2, b2)) {
+    const isOdd = (acc, x2) => x2 !== R.min(a1, b1)
+    const reducer = (acc, x1) => R.append([x1, b2], acc)
+    return R.reduceWhile(
+      isOdd,
+      reducer,
+      [
+        [a1, a2],
+        [b1, b2],
+      ],
+      sequenceGen(a1, b1)
+    )
+  } else {
+    return [
+      [a1, a2],
+      [b1, b2],
+    ]
+  }
+}
+
+const solution = R.pipe(
+  R.map(R.replace('\n', '')),
+  R.map(R.split(' -> ')),
+  R.map(R.map(R.split(','))),
+  R.map(R.map(R.map(Number))),
+  R.filter(filterLinearLines),
+  R.map(transformCoordinates),
+  R.unnest,
+  R.countBy(R.identity),
+  R.values,
+  R.filter((a) => a > 1),
+  R.length
+)
+```
+
+## Part Two: diagonal lines
+
+You still need to determine the number of points where at least two lines overlap
+
+> Q) At how many points do at least two lines overlap?
+
+```js
+const transformCoordinates = ([[a1, a2], [b1, b2]]) => {
+  if (R.equals(a1, b1)) {
+    return R.concat(
+      [
+        [a1, a2],
+        [b1, b2],
+      ],
+      R.pipe(
+        R.map(R.of),
+        R.map(R.append(R.__, [b1])),
+        R.map(R.unnest)
+      )(sequenceGen(a2, b2))
+    )
+  } else if (R.equals(a2, b2)) {
+    return R.concat(
+      [
+        [a1, a2],
+        [b1, b2],
+      ],
+      R.pipe(R.map(R.of), R.map(R.append(b2)))(sequenceGen(a1, b1))
+    )
+  } else if (diff(a1, b1) === diff(a2, b2)) {
+    return R.concat(
+      [
+        [a1, a2],
+        [b1, b2],
+      ],
+      R.transpose([sequenceGen(a1, b1), sequenceGen(a2, b2)])
+    )
+  } else {
+    return [
+      [a1, a2],
+      [b1, b2],
+    ]
+  }
+}
+
+const solution = R.pipe(
+  R.map(R.replace('\n', '')),
+  R.map(R.split(' -> ')),
+  R.map(R.map(R.split(','))),
+  R.map(R.map(R.map(Number))),
+  R.map(transformCoordinates),
+  R.unnest,
+  R.countBy(R.identity),
+  R.values,
+  R.filter((a) => a > 1),
+  R.length
+)
+```

@@ -1,0 +1,165 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+
+export const meta = {
+  date: '2022-05-24',
+  title: 'Seven Segment Search - Advent of Code 2021 Day 08',
+  topic: 'javascript',
+  group: 'adventofcode2021',
+  tags: ['ramda'],
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+```
+ 0:      1:      2:      3:      4:
+ aaaa    ....    aaaa    aaaa    ....
+b    c  .    c  .    c  .    c  b    c
+b    c  .    c  .    c  .    c  b    c
+ ....    ....    dddd    dddd    dddd
+e    f  .    f  e    .  .    f  .    f
+e    f  .    f  e    .  .    f  .    f
+ gggg    ....    gggg    gggg    ....
+
+  5:      6:      7:      8:      9:
+ aaaa    aaaa    aaaa    aaaa    aaaa
+b    .  b    .  .    c  b    c  b    c
+b    .  b    .  .    c  b    c  b    c
+ dddd    dddd    ....    dddd    dddd
+.    f  e    f  .    f  e    f  .    f
+.    f  e    f  .    f  e    f  .    f
+ gggg    gggg    ....    gggg    gggg
+
+```
+
+```
+be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb |
+fdgacbe cefdb cefbgd gcbe
+edbfga begcd cbg gc gcadebf fbgde acbgfd abcde gfcbed gfec |
+fcgedb cgb dgebacf gc
+fgaebd cg bdaec gdafb agbcfd gdcbef bgcad gfac gcb cdgabef |
+cg cg fdcagb cbg
+fbegcd cbd adcefb dageb afcb bc aefdc ecdab fgdeca fcdbega |
+efabcd cedba gadfec cb
+aecbfdg fbg gf bafeg dbefa fcge gcbea fcaegb dgceab fcbdga |
+gecf egdcabf bgf bfgea
+fgeab ca afcebg bdacfeg cfaedg gcfdb baec bfadeg bafgc acf |
+gebdcfa ecba ca fadegcb
+dbcfg fgd bdegcaf fgec aegbdf ecdfab fbedc dacgb gdcebf gf |
+cefg dcbef fcge gbcadfe
+bdfegc cbegaf gecbf dfcage bdacg ed bedf ced adcbefg gebcd |
+ed bcgafe cdgba cbgef
+egadfb cdbfeg cegd fecab cgb gbdefca cg fgcdab egfdb bfceg |
+gbdfcae bgc cg cgb
+gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc |
+fgae cfgab fg bagce
+```
+
+> Q) In the output values, how many times do digits 1, 4, 7, or 8 appear?
+
+```js
+const solution = R.pipe(
+  R.map(R.split(' | ')),
+  R.map(R.last),
+  R.join(' '),
+  R.split(' '),
+  R.map(R.length),
+  R.filter(R.includes(R.__, [2, 4, 3, 7])),
+  R.length
+)
+```
+
+## Part Two: decode all patterns
+
+For each entry, determine all of the wire/segment connections and decode the four-digit output values.
+
+```
+fdgacbe cefdb cefbgd gcbe: 8394
+fcgedb cgb dgebacf gc: 9781
+cg cg fdcagb cbg: 1197
+efabcd cedba gadfec cb: 9361
+gecf egdcabf bgf bfgea: 4873
+gebdcfa ecba ca fadegcb: 8418
+cefg dcbef fcge gbcadfe: 4548
+ed bcgafe cdgba cbgef: 1625
+gbdfcae bgc cg cgb: 8717
+fgae cfgab fg bagce: 4315
+```
+
+> Q) What do you get if you add up all of the output values?
+
+```js
+const lengthEq = R.curry((size, str) => str.length === size)
+
+const lengths = (arr, size) =>
+  R.pipe(R.filter(lengthEq(size)), R.map(R.split('')))(arr)
+
+const sortChar = (str) =>
+  R.pipe(R.split(''), R.sortBy(R.identity), R.join(''))(str)
+
+const sortUniqChar = (str) =>
+  R.pipe(R.split(''), R.uniq, R.sortBy(R.identity), R.join(''))(str)
+
+const findPredicate = R.curry((size, source, arr) =>
+  R.equals(size, R.length(R.difference(source, arr)))
+)
+
+const compute = (str) => {
+  const [inp, output] = R.split(' | ', str)
+
+  const input = R.split(' ', inp)
+
+  const one = R.find(lengthEq(2), input)
+  const four = R.find(lengthEq(4), input)
+  const seven = R.find(lengthEq(3), input)
+  const eight = R.find(lengthEq(7), input)
+
+  const nine = R.find(
+    findPredicate(0, sortUniqChar(seven + four)),
+    lengths(input, 6)
+  ).join('')
+  const six = R.find(
+    findPredicate(1, R.split('', one)),
+    lengths(input, 6)
+  ).join('')
+  const zero = R.apply(
+    R.join(''),
+    R.difference(lengths(input, 6), R.map(R.split(''), [six, nine]))
+  )
+
+  const three = R.find(
+    findPredicate(0, R.split('', one)),
+    lengths(input, 5)
+  ).join('')
+
+  const c = R.difference(R.split('', one), R.split('', six))
+  const f = R.difference(R.split('', one), c)
+
+  const two = R.find(findPredicate(1, f), lengths(input, 5)).join('')
+  const five = R.find(findPredicate(1, c), lengths(input, 5)).join('')
+
+  const details = {
+    [sortChar(zero)]: '0',
+    [sortChar(one)]: '1',
+    [sortChar(two)]: '2',
+    [sortChar(three)]: '3',
+    [sortChar(four)]: '4',
+    [sortChar(five)]: '5',
+    [sortChar(six)]: '6',
+    [sortChar(seven)]: '7',
+    [sortChar(eight)]: '8',
+    [sortChar(nine)]: '9',
+  }
+
+  return R.pipe(
+    R.split(' '),
+    R.map(sortChar),
+    R.map(R.prop(R.__, details)),
+    R.join(''),
+    Number
+  )(output)
+}
+
+const solution = R.pipe(R.map(compute), R.sum)
+```

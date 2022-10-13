@@ -1,0 +1,45 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+
+export const meta = {
+  date: '2022-04-11',
+  title:
+    '#20 Assign local variables to default generic slots to dry up your code and improve performance',
+  topic: 'typescript',
+  group: 'tips',
+  tags: ['tricks'],
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+You can DRY up your generics code MASSIVELY (and improve perf) by assigning local variables to default generic slots.
+
+Here, we move some complex 'Extract' logic to a generic slot, meaning it only gets calculated once.
+
+<a
+  href="https://twitter.com/mattpocockuk/status/1516752789564764160"
+  target="_blank"
+>
+  Original Link
+</a>
+
+```ts
+export type Obj = {
+  a: 'FOO'
+  a2: 'a2'
+  a3: 'a3'
+  b: 'b'
+  b1: 'b1'
+  b2: 'b2'
+}
+
+type ValuesOfKeysStartingWithA<
+  Obj,
+  _ExtractedKeys extends keyof Obj = Extract<keyof Obj, `a${string}`>
+> = {
+  [K in _ExtractedKeys]: Obj[K]
+}[_ExtractedKeys]
+
+type NewUnion = ValuesOfKeysStartingWithA<Obj>
+```

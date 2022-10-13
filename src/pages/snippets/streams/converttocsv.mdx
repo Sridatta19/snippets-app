@@ -1,0 +1,46 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+
+export const meta = {
+  date: '2022-02-20',
+  title: 'Merging JSON files into CSV format',
+  topic: 'nodejs',
+  group: 'streams',
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+```js
+import { createWriteStream, createReadStream } from 'fs'
+import { Transform } from 'json2csv'
+
+const input = createReadStream(`data/input.json`, { encoding: 'utf8' })
+
+const output = createWriteStream(`results/combined.csv`, {
+  encoding: 'utf8',
+})
+
+let counter = 1
+
+const jsonToCSV = new Transform(
+  {
+    fields: ['id', 'type', 'description'],
+    transforms: [
+      (item) => ({
+        ...item,
+        id: counter++,
+      }),
+    ],
+  },
+  { highWaterMark: 16384, encoding: 'utf-8' }
+)
+
+input.pipe(jsonToCSV).pipe(output)
+
+jsonToCSV
+  .on('end', () => {
+    console.log('combined csv generated')
+  })
+  .on('error', (err) => console.log(err))
+```

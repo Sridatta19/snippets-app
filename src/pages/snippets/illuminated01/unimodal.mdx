@@ -1,0 +1,63 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+import Callout from '@/components/Callout'
+
+export const meta = {
+  date: '2022-07-08',
+  title: 'Unimodal Array - Algorithms Illuminated Vol 1',
+  topic: 'rust',
+  group: 'illuminated01',
+  tags: ['divideconquer'],
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+### Unimodal array
+
+Its entries are in increasing order up until its maximum
+element, after which its elements are in decreasing order.
+
+Give an
+algorithm to compute the maximum element of a unimodal array that
+runs in O(log n) time.
+
+<Callout title="Pseudo Code">
+  Check if middle element is the solution
+  <br />C := recursively check middle of first half of A<br />D := recursively check
+  middle of second half of A<br />
+</Callout>
+
+### Solution
+
+```rust
+fn unimodal<T>(list: &[T]) -> Option<T>
+where
+    T: PartialOrd + Copy + std::fmt::Debug,
+{
+    if list.len() <= 2 {
+        return None;
+    }
+
+    let half = list.len() / 2;
+
+    if list[half] > list[half - 1] && list[half] > list[half + 1] {
+        return Some(list[half]);
+    }
+
+    if list[half] > list[half - 1] && list[half + 1] > list[half] {
+        return unimodal(&list[half..]);
+    } else {
+        return unimodal(&list[0..half]);
+    }
+}
+
+pub fn main() {
+    let list: Vec<u32> = vec![1, 2, 3, 4, 5, 6, 7, 8];
+
+    match unimodal(&list) {
+        Some(ans) => println!("printing unimodal head {}", ans),
+        None => println!("not an unimodal array"),
+    };
+}
+```

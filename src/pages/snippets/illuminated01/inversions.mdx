@@ -1,0 +1,131 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+
+export const meta = {
+  date: '2022-05-21',
+  title: 'Binary Diagnostic - Advent of Code 2021 Day 03',
+  topic: 'rust',
+  group: 'illuminated01',
+  tags: ['divideconquer'],
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+You need to use the binary numbers in the diagnostic report to generate two new binary numbers (called the gamma rate and the epsilon rate). The power consumption can then be found by multiplying the gamma rate by the epsilon rate.
+
+```
+00100
+11110
+10110
+10111
+10101
+01111
+00111
+11100
+10000
+11001
+00010
+01010
+```
+
+> Q) What is the power consumption of the submarine?
+
+### Solution
+
+```js
+const most = R.pipe(
+  R.countBy(R.identity),
+  R.toPairs,
+  R.reduce(
+    R.maxBy(([key, value]) => value),
+    [null, -Infinity]
+  ),
+  R.head
+)
+
+const least = R.pipe(
+  R.countBy(R.identity),
+  R.toPairs,
+  R.reduce(
+    R.minBy(([key, value]) => value),
+    [null, Infinity]
+  ),
+  R.head
+)
+
+const solution = R.pipe(
+  R.map(R.splitEvery(1)),
+  R.transpose,
+  R.map(R.juxt([most, least])),
+  R.transpose,
+  R.map(R.join('')),
+  R.map((num) => parseInt(num, 2)),
+  R.apply(R.multiply)
+)
+```
+
+## Part Two: Consider parameter 'life support rating'
+
+the life support rating, which can be determined by multiplying the oxygen generator rating by the CO2 scrubber rating.
+
+> Q) What is the life support rating of the submarine?
+
+```js
+const mostOccurence = R.pipe(
+  R.countBy(R.identity),
+  R.toPairs,
+  R.sortBy(R.head),
+  R.reverse,
+  R.reduce(
+    R.maxBy(([key, value]) => value),
+    [null, -Infinity]
+  ),
+  R.head
+)
+
+const leastOccurence = R.pipe(
+  R.countBy(R.identity),
+  R.toPairs,
+  R.sortBy(R.head),
+  R.reduce(
+    R.minBy(([key, value]) => value),
+    [null, Infinity]
+  ),
+  R.head
+)
+
+const computeMostOccurenceValueAtIndex = (index) =>
+  R.pipe(
+    R.map(R.splitEvery(1)),
+    R.map(R.view(R.lensIndex(index))),
+    mostOccurence
+  )
+
+const computeLeastOccurenceValueAtIndex = (index) =>
+  R.pipe(
+    R.map(R.splitEvery(1)),
+    R.map(R.view(R.lensIndex(index))),
+    leastOccurence
+  )
+
+const mostReducer = (result, index) => {
+  const most = computeMostOccurenceValueAtIndex(index)(result)
+  const pred = (a) => most === R.slice(index, index + 1, a)
+  const computeAnswer = R.filter(pred)
+  return computeAnswer(result)
+}
+
+const leastReducer = (result, index) => {
+  const least = computeLeastOccurenceValueAtIndex(index)(result)
+  const pred = (a) => least === R.slice(index, index + 1, a)
+  const computeAnswer = R.filter(pred)
+  return computeAnswer(result)
+}
+
+const solution = R.pipe(
+  R.juxt([R.reduce(mostReducer, values), R.reduce(leastReducer, values)]),
+  R.map((a) => parseInt(a, 2)),
+  R.apply(R.multiply)
+)(Array.from({ length: 13 }, (_v, i) => i))
+```

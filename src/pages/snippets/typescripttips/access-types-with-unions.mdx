@@ -1,0 +1,50 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+
+export const meta = {
+  date: '2022-07-11',
+  title: '#25 Access deeper parts of objects and arrays',
+  topic: 'typescript',
+  group: 'tips',
+  tags: ['tricks'],
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+Accessing object values and array members is MUCH more powerful in the type world than it is in the runtime world.
+
+Passing a union... RETURNS a union!
+
+<a
+  href="https://twitter.com/mattpocockuk/status/1546467590679146496"
+  target="_blank"
+>
+  Original Link
+</a>
+
+```ts
+interface ColorVariants {
+  primary: 'blue'
+  secondary: 'red'
+  tertiary: 'green'
+}
+
+type PrimaryColor = ColorVariants['primary']
+
+type NonPrimaryColor = ColorVariants['secondary' | 'tertiary']
+
+type EveryColor = ColorVariants[keyof ColorVariants]
+
+type Letters = ['a', 'b', 'c']
+
+type AorB = Letters[0 | 1]
+type Letter = Letters[number]
+
+interface UserRoleConfig {
+  user: ['view', 'create', 'update']
+  superAdmin: ['view', 'create', 'update', 'delete']
+}
+
+type Role = UserRoleConfig[keyof UserRoleConfig][number]
+```

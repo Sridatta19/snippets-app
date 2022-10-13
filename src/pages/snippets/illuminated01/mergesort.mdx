@@ -1,0 +1,71 @@
+import { SnippetLayout } from '@/components/SnippetLayout'
+import Callout from '@/components/Callout'
+
+export const meta = {
+  date: '2022-07-08',
+  title: 'Mergesort - Algorithms Illuminated Vol 1',
+  topic: 'rust',
+  group: 'illuminated01',
+  tags: ['divideconquer', 'sorting'],
+  description:
+    'When we released the first version of cosmOS last year, it was written in Go. Go is a wonderful programming language, but it’s been a while since I’ve seen an article on the front page of Hacker News about rewriting some important tool in Go and I see articles on there about rewriting things in Rust every single week.',
+}
+
+export default (props) => <SnippetLayout meta={meta} {...props} />
+
+### Problem
+
+Input: array A of n distinct integers.<br/>
+Output: array with the same integers, sorted from
+smallest to largest.
+
+<Callout title="Pseudo Code">
+  C := recursively sort first half of A<br />D := recursively sort second half
+  of A<br />
+  return Merge (C,D)
+</Callout>
+
+### Solution
+
+```rust
+use std::cmp::Ordering;
+
+pub fn merge_sort<T: PartialOrd + Copy>(list: &[T]) -> Vec<T> {
+    let size = list.len();
+    if size == 1 {
+        return list.to_vec();
+    }
+    let split = size / 2;
+    let list_one = merge_sort(&list[0..split as usize]);
+    let list_two = merge_sort(&list[split as usize..]);
+
+    let mut vec = Vec::with_capacity(size as usize);
+
+    let mut i = 0;
+    let mut j = 0;
+
+    loop {
+        if list_one.len() == i {
+            vec.extend_from_slice(&list_two[j..]);
+            break;
+        }
+        if list_two.len() == j {
+            vec.extend_from_slice(&list_one[i..]);
+            break;
+        }
+        let result = list_one[i].partial_cmp(&list_two[j]);
+        match result {
+            Some(Ordering::Less) => {
+                vec.push(list_one[i]);
+                i += 1;
+            }
+            _ => {
+                vec.push(list_two[j]);
+                j += 1;
+            }
+        }
+    }
+
+    vec
+}
+```
