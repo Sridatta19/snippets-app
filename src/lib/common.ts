@@ -28,7 +28,7 @@ export const GROUPS_METADATA: Record<string, IGroup> = {
   adventofcode2021: {
     id: 'adventofcode2021',
     title: 'Advent of Code 2021',
-    source: '/adventofcode.jpeg',
+    source: '/adventofcode.webp',
   },
   illuminated01: {
     id: 'illuminated01',
@@ -43,7 +43,7 @@ export const GROUPS_METADATA: Record<string, IGroup> = {
   tips: {
     id: 'tips',
     title: 'Typescript Tips',
-    source: '/typescripttips.jpeg',
+    source: '/typescripttips.webp',
   },
   streams: {
     id: 'streams',
@@ -53,7 +53,7 @@ export const GROUPS_METADATA: Record<string, IGroup> = {
   scraping: {
     id: 'scraping',
     title: 'Scraping',
-    source: '/scraping.jpeg',
+    source: '/scraping.webp',
   },
 } as const
 

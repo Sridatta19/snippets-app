@@ -3,7 +3,7 @@ import { Head, Html, Main, NextScript } from 'next/document'
 export default function Document() {
   return (
     <Html
-      className="scroll-smooth font-sans antialiased selection:bg-blue-500 selection:text-blue-50"
+      className="scroll-smooth font-sans antialiased selection:bg-gray-700 selection:text-gray-50"
       lang="en"
     >
       <Head>

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import Image from 'next/image'
+import Image from 'next/future/image'
 import { matchSorter } from 'match-sorter'
 import { MOCK } from '@/utils/mockdata'
 
@@ -28,8 +28,9 @@ export function RelatedSnippets({ meta }: { meta: IMeta }) {
           <div key={snippet.slug} className="group relative">
             <div className="aspect-w-7 aspect-h-4 relative overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75">
               <Image
-                layout="fill"
                 src="/photo.webp"
+                sizes="100vw"
+                fill
                 alt={snippet.title}
                 className="object-cover object-center"
               />

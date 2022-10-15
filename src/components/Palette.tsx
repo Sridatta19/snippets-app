@@ -50,7 +50,7 @@ export default function Palette({
       ? []
       : matchSorter(MOCK, query, {
           keys: ['title', 'tags', 'groupId', 'topicId'],
-        })
+        }).slice(0, 6)
 
   const onSnippetSelection = (snippet: ISearchSnippet) => {
     router.push(`/snippets/${snippet.slug}`)

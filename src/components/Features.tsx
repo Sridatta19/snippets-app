@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import Image from 'next/future/image'
 
 const features = [
   {
@@ -17,12 +17,13 @@ export default function Features() {
   return (
     <div className="">
       <div aria-hidden="true" className="relative">
-        <div className="relative h-96 w-full object-center">
+        <div className="relative h-96 w-full">
           <Image
+            sizes="100vw"
+            className="object-cover object-center"
+            fill
             src="/photo.webp"
             alt="Features"
-            layout="fill"
-            objectFit="cover"
           />
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-white" />

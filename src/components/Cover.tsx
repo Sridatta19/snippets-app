@@ -1,4 +1,5 @@
-import Image from 'next/image'
+import Image from 'next/future/image'
+import coverImage from '@/images/cover.webp'
 
 const Cover = () => {
   return (
@@ -8,10 +9,12 @@ const Cover = () => {
       </div>
       <div className="aspect-h-4 aspect-w-7 w-full overflow-hidden shadow-lg">
         <Image
+          sizes="100vw"
+          fill
+          className="object-cover object-center"
           alt="App Screenshot"
-          layout="fill"
-          objectFit="cover"
-          src="/portrait.png"
+          placeholder="blur"
+          src={coverImage}
         />
       </div>
     </div>

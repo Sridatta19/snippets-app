@@ -24,7 +24,7 @@ const MeetTopics = ({ topTopics }: { topTopics: ITopic[] }) => {
         return (
           <div className="relative grid grid-cols-1 grid-rows-1 items-end overflow-hidden rounded-4xl shadow-md transition duration-300 ease-out will-change-transform">
             <div
-              className={`flex h-80 w-full flex-col rounded-3xl bg-gray-100 bg-radial object-cover py-6 hover:bg-gray-200 hover:opacity-70 ${entry.classes}`}
+              className={`flex h-80 w-full flex-col rounded-3xl bg-gray-100 bg-radial py-6 hover:bg-gray-200 hover:opacity-70 ${entry.classes}`}
             >
               <Icon className="mx-auto flex-1 self-center" />
               <div className="px-10">
